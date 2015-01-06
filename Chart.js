@@ -3,7 +3,7 @@
  * http://chartjs.org/
  * Version: 1.0.1-beta.4
  *
- * Copyright 2014 Nick Downie
+ * Copyright 2015 Nick Downie
  * Released under the MIT license
  * https://github.com/nnnick/Chart.js/blob/master/LICENSE.md
  */
@@ -92,8 +92,8 @@
 			// Boolean - whether or not the chart should be responsive and resize when the browser does.
 			responsive: false,
 
-                        // Boolean - whether to maintain the starting aspect ratio or not when responsive, if set to false, will take up entire container
-                        maintainAspectRatio: true,
+			// Boolean - whether to maintain the starting aspect ratio or not when responsive, if set to false, will take up entire container
+			maintainAspectRatio: true,
 
 			// Boolean - Determines whether to draw tooltips on the canvas or not - attaches events to touchmove & mousemove
 			showTooltips: true,
@@ -144,10 +144,10 @@
 			tooltipXOffset: 10,
 
 			// String - Template string for single tooltips
-			tooltipTemplate: "<%if (label){%><%=label%>: <%}%><%= value %>",
+			tooltipTemplate: "<%if (label){%><%=label%>: <%}%><%= value %><%if (unit){%> <%= unit %><%}%>",
 
 			// String - Template string for single tooltips
-			multiTooltipTemplate: "<%= value %>",
+			multiTooltipTemplate: "<%= value %><%if (unit){%> <%= unit %><%}%>",
 
 			// String - Colour behind the legend colour block
 			multiTooltipKeyBackground: '#fff',
@@ -238,7 +238,7 @@
 				if (filterCallback(currentItem)){
 					return currentItem;
 				}
-			};
+			}
 		},
 		findPreviousWhere = helpers.findPreviousWhere = function(arrayToSearch, filterCallback, startIndex){
 			// Default to end of the array
@@ -250,7 +250,7 @@
 				if (filterCallback(currentItem)){
 					return currentItem;
 				}
-			};
+			}
 		},
 		inherits = helpers.inherits = function(extensions){
 			//Basic javascript inheritance based on the model created in Backbone.js
@@ -441,7 +441,9 @@
 		//Templating methods
 		//Javascript micro templating by John Resig - source at http://ejohn.org/blog/javascript-micro-templating/
 		template = helpers.template = function(templateString, valuesObject){
-			 // If templateString is function rather than string-template - call the function for valuesObject
+
+			// If templateString is function rather than string-template - call the function for valuesObject
+
 			if(templateString instanceof Function){
 			 	return templateString(valuesObject);
 		 	}
@@ -830,7 +832,7 @@
 				newHeight = this.options.maintainAspectRatio ? newWidth / this.chart.aspectRatio : getMaximumHeight(this.chart.canvas);
 
 			canvas.width = this.chart.width = newWidth;
-			canvas.height =  this.chart.height = newHeight;
+			canvas.height = this.chart.height = newHeight;
 
 			retinaScale(this.chart);
 
@@ -2040,6 +2042,7 @@
 
 				var datasetObject = {
 					label : dataset.label || null,
+					unit : dataset.unit || null,
 					fillColor : dataset.fillColor,
 					strokeColor : dataset.strokeColor,
 					bars : []
@@ -2052,6 +2055,7 @@
 					datasetObject.bars.push(new this.BarClass({
 						value : dataPoint,
 						label : data.labels[index],
+						unit : dataset.unit,
 						datasetLabel: dataset.label,
 						strokeColor : dataset.strokeColor,
 						fillColor : dataset.fillColor,
@@ -2176,6 +2180,7 @@
 				this.datasets[datasetIndex].bars.push(new this.BarClass({
 					value : value,
 					label : label,
+					unit : this.datasets[datasetIndex].unit,
 					x: this.scale.calculateBarX(this.datasets.length, datasetIndex, this.scale.valuesCount+1),
 					y: this.scale.endPoint,
 					width : this.scale.calculateBarWidth(this.datasets.length),
@@ -2339,7 +2344,8 @@
 				strokeColor : this.options.segmentStrokeColor,
 				startAngle : Math.PI * 1.5,
 				circumference : (this.options.animateRotate) ? 0 : this.calculateCircumference(segment.value),
-				label : segment.label
+				label : segment.label,
+				unit : segment.unit || null,
 			}));
 			if (!silent){
 				this.reflow();
@@ -2509,6 +2515,7 @@
 
 				var datasetObject = {
 					label : dataset.label || null,
+					unit : dataset.unit || null,
 					fillColor : dataset.fillColor,
 					strokeColor : dataset.strokeColor,
 					pointColor : dataset.pointColor,
@@ -2524,6 +2531,7 @@
 					datasetObject.points.push(new this.PointClass({
 						value : dataPoint,
 						label : data.labels[index],
+						unit : dataset.unit,
 						datasetLabel: dataset.label,
 						strokeColor : dataset.pointStrokeColor,
 						fillColor : dataset.pointColor,
@@ -2640,6 +2648,7 @@
 				this.datasets[datasetIndex].points.push(new this.PointClass({
 					value : value,
 					label : label,
+					unit : this.datasets[datasetIndex].unit,
 					x: this.scale.calculateX(this.scale.valuesCount+1),
 					y: this.scale.endPoint,
 					strokeColor : this.datasets[datasetIndex].pointStrokeColor,
@@ -2923,6 +2932,7 @@
 				highlightColor: segment.highlight || segment.color,
 				label: segment.label,
 				value: segment.value,
+				unit : segment.unit || null,
 				outerRadius: (this.options.animateScale) ? 0 : this.scale.calculateCenterOffset(segment.value),
 				circumference: (this.options.animateRotate) ? 0 : this.scale.getCircumference(),
 				startAngle: Math.PI * 1.5
@@ -3137,6 +3147,7 @@
 
 				var datasetObject = {
 					label: dataset.label || null,
+					unit : dataset.unit || null,
 					fillColor : dataset.fillColor,
 					strokeColor : dataset.strokeColor,
 					pointColor : dataset.pointColor,
@@ -3155,6 +3166,7 @@
 					datasetObject.points.push(new this.PointClass({
 						value : dataPoint,
 						label : data.labels[index],
+						unit : dataset.unit,
 						datasetLabel: dataset.label,
 						x: (this.options.animation) ? this.scale.xCenter : pointPosition.x,
 						y: (this.options.animation) ? this.scale.yCenter : pointPosition.y,
@@ -3281,6 +3293,7 @@
 				this.datasets[datasetIndex].points.push(new this.PointClass({
 					value : value,
 					label : label,
+					unit : this.datasets[datasetIndex].unit,
 					x: pointPosition.x,
 					y: pointPosition.y,
 					strokeColor : this.datasets[datasetIndex].pointStrokeColor,

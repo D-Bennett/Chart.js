@@ -101,7 +101,8 @@
 				strokeColor : this.options.segmentStrokeColor,
 				startAngle : Math.PI * 1.5,
 				circumference : (this.options.animateRotate) ? 0 : this.calculateCircumference(segment.value),
-				label : segment.label
+				label : segment.label,
+				unit : segment.unit || null,
 			}));
 			if (!silent){
 				this.reflow();

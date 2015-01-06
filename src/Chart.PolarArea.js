@@ -135,6 +135,7 @@
 				highlightColor: segment.highlight || segment.color,
 				label: segment.label,
 				value: segment.value,
+				unit : segment.unit || null,
 				outerRadius: (this.options.animateScale) ? 0 : this.scale.calculateCenterOffset(segment.value),
 				circumference: (this.options.animateRotate) ? 0 : this.scale.getCircumference(),
 				startAngle: Math.PI * 1.5

@@ -96,6 +96,7 @@
 
 				var datasetObject = {
 					label : dataset.label || null,
+					unit : dataset.unit || null,
 					fillColor : dataset.fillColor,
 					strokeColor : dataset.strokeColor,
 					bars : []
@@ -108,6 +109,7 @@
 					datasetObject.bars.push(new this.BarClass({
 						value : dataPoint,
 						label : data.labels[index],
+						unit : dataset.unit,
 						datasetLabel: dataset.label,
 						strokeColor : dataset.strokeColor,
 						fillColor : dataset.fillColor,
@@ -232,6 +234,7 @@
 				this.datasets[datasetIndex].bars.push(new this.BarClass({
 					value : value,
 					label : label,
+					unit : this.datasets[datasetIndex].unit,
 					x: this.scale.calculateBarX(this.datasets.length, datasetIndex, this.scale.valuesCount+1),
 					y: this.scale.endPoint,
 					width : this.scale.calculateBarWidth(this.datasets.length),
